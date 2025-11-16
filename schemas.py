@@ -12,7 +12,7 @@ Model name is converted to lowercase for the collection name:
 """
 
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, Literal
 
 # Example schemas (replace with your own):
 
@@ -40,6 +40,29 @@ class Product(BaseModel):
 
 # Add your own schemas here:
 # --------------------------------------------------
+
+ServiceType = Literal[
+    "Suporte Remoto",
+    "Remoção de Vírus",
+    "Instalação/Configuração",
+    "Consultoria",
+]
+
+class Booking(BaseModel):
+    """
+    Booking (appointments) collection schema
+    Collection name: "booking"
+    """
+    name: str = Field(..., description="Nome completo do cliente")
+    email: str = Field(..., description="Email para contato e confirmação")
+    phone: Optional[str] = Field(None, description="Telefone/WhatsApp")
+    service_type: ServiceType = Field(..., description="Tipo de serviço solicitado")
+    issue_description: str = Field(..., description="Descrição do problema ou necessidade")
+    preferred_datetime: str = Field(..., description="Data e hora preferenciais (ISO string)")
+    status: Literal["pendente", "confirmado", "concluido", "cancelado"] = Field(
+        "pendente", description="Status do agendamento"
+    )
+    meeting_link: Optional[str] = Field(None, description="Link da videochamada se confirmado")
 
 # Note: The Flames database viewer will automatically:
 # 1. Read these schemas from GET /schema endpoint
